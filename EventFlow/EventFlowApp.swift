@@ -4,19 +4,19 @@ import BackgroundTasks
 #endif
 
 @main
-struct CalendarSyncApp: App {
+struct EventFlowApp: App {
     init() {
         #if os(iOS)
         BGTaskScheduler.shared.register(
-            forTaskWithIdentifier: "de.m-shammout.CalendarSync.refresh",
+            forTaskWithIdentifier: "com.m-shammout.EventFlow.refresh",
             using: nil
         ) { task in
             let sourceID = UserDefaults.standard.string(forKey: "sourceCalendarID") ?? ""
             let destID = UserDefaults.standard.string(forKey: "destCalendarID") ?? ""
             Task {
-                let count = try? await CalendarSyncService.shared
+                let result = try? await EventFlowService.shared
                     .sync(sourceID: sourceID, destID: destID)
-                task.setTaskCompleted(success: count != nil)
+                task.setTaskCompleted(success: result != nil)
             }
             Self.scheduleNextRefresh()
         }
@@ -25,10 +25,12 @@ struct CalendarSyncApp: App {
 
     #if os(iOS)
     static func scheduleNextRefresh() {
+        let minutes = UserDefaults.standard.object(forKey: "refreshIntervalMinutes") as? Int ?? 30
+        guard minutes > 0 else { return }
         let req = BGAppRefreshTaskRequest(
-            identifier: "de.m-shammout.CalendarSync.refresh"
+            identifier: "com.m-shammout.EventFlow.refresh"
         )
-        req.earliestBeginDate = Date(timeIntervalSinceNow: 30 * 60)
+        req.earliestBeginDate = Date(timeIntervalSinceNow: Double(minutes) * 60)
         try? BGTaskScheduler.shared.submit(req)
     }
     #endif

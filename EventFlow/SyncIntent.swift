@@ -1,8 +1,8 @@
 import AppIntents
 
 struct SyncCalendarsIntent: AppIntent {
-    static let title: LocalizedStringResource = "Kalender synchronisieren"
-    static let description: IntentDescription = "Kopiert Exchange-Kalenderevents nach iCloud"
+    static let title: LocalizedStringResource = "Sync Calendars"
+    static let description: IntentDescription = "Copies Exchange calendar events to iCloud"
 
     func perform() async throws -> some IntentResult & ReturnsValue<Int> {
         let sourceID = UserDefaults.standard.string(forKey: "sourceCalendarID") ?? ""
@@ -12,8 +12,8 @@ struct SyncCalendarsIntent: AppIntent {
             throw SyncIntentError.noCalendarsConfigured
         }
 
-        let count = try await CalendarSyncService.shared.sync(sourceID: sourceID, destID: destID)
-        return .result(value: count)
+        let result = try await EventFlowService.shared.sync(sourceID: sourceID, destID: destID)
+        return .result(value: result.created + result.updated)
     }
 }
 
@@ -23,20 +23,20 @@ enum SyncIntentError: Error, CustomLocalizedStringResourceConvertible {
     var localizedStringResource: LocalizedStringResource {
         switch self {
         case .noCalendarsConfigured:
-            "Bitte zuerst Quell- und Zielkalender in CalendarSync auswählen"
+            "Please select source and destination calendars in EventFlow first"
         }
     }
 }
 
-struct CalendarSyncShortcuts: AppShortcutsProvider {
+struct EventFlowShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
             intent: SyncCalendarsIntent(),
             phrases: [
-                "Synchronisiere Kalender mit \(.applicationName)",
-                "Sync Kalender mit \(.applicationName)"
+                "Sync calendars with \(.applicationName)",
+                "Sync calendar with \(.applicationName)"
             ],
-            shortTitle: "Kalender syncen",
+            shortTitle: "Sync Calendars",
             systemImageName: "calendar.badge.arrow.2.trianglepath"
         )
     }

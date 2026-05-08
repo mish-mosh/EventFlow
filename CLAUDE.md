@@ -1,4 +1,4 @@
-# CalendarSync
+# EventFlow
 
 iOS app that copies Exchange calendar events into iCloud via EventKit — no Azure Admin Consent required.
 
@@ -9,20 +9,20 @@ iOS app that copies Exchange calendar events into iCloud via EventKit — no Azu
 
 ## Project Structure
 ```
-CalendarSync/
-├── CalendarSync.xcodeproj/
+EventFlow/
+├── EventFlow.xcodeproj/
 ├── Info.plist                    # Bundle keys + permissions + BGTask identifier
-└── CalendarSync/
-    ├── CalendarSyncApp.swift     # Entry point + BGTask registration
+└── EventFlow/
+    ├── EventFlowApp.swift     # Entry point + BGTask registration
     ├── ContentView.swift         # UI: pickers, sync button, status
-    ├── CalendarSyncService.swift # Core sync logic (actor)
+    ├── EventFlowService.swift # Core sync logic (actor)
     └── SyncStore.swift           # @Observable state + calendar loading
 ```
 
 ## Key Details
-- Bundle ID: `de.m-shammout.CalendarSync`
-- BGTask identifier: `de.m-shammout.CalendarSync.refresh`
-- Info.plist lives at `CalendarSync/Info.plist` (one level above source, outside PBXFileSystemSynchronizedRootGroup)
+- Bundle ID: `com.m-shammout.EventFlow`
+- BGTask identifier: `com.m-shammout.EventFlow.refresh`
+- Info.plist lives at `EventFlow/Info.plist` (one level above source, outside PBXFileSystemSynchronizedRootGroup)
 - `GENERATE_INFOPLIST_FILE = NO`, `INFOPLIST_FILE = Info.plist` in build settings
 
 ## Known Limitations
@@ -33,5 +33,5 @@ CalendarSync/
 
 ## Testing BGTask (Xcode Debugger Console)
 ```
-e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"de.m-shammout.CalendarSync.refresh"]
+e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.m-shammout.EventFlow.refresh"]
 ```
