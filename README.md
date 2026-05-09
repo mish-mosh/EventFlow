@@ -2,7 +2,7 @@
 
 <p align="center"><img src="./assets/EventFlow-Logo.png" width="120" /></p>
 
-Your Exchange calendar, on your iPhone — without IT involvement.
+Your Exchange calendar, in your favorite app — without IT involvement.
 
 EventFlow copies events from your Exchange calendar (added via the iOS Calendar app) into iCloud, so they show up in any calendar app you already use. No admin permissions needed, no server, no setup beyond the app.
 
